@@ -1,0 +1,8 @@
+resourcepacks:
+  - id: 00000000-5555-4321-a000-000000000000
+    name: Resourcepack
+    url: https://files.sneakyrp.com/resourcepacks/rp.zip
+    hash: "0000000000000000000000000000000000000000"
+    enabled: true
+    priority: 0
+    optional: false

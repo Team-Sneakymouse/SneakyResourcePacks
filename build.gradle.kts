@@ -28,7 +28,7 @@ dependencies {
 
 tasks.jar {
 	manifest {
-		attributes["Main-Class"] = "com.danidipp.paperplugin.PaperPlugin"
+		attributes["Main-Class"] = "com.danidipp.sneakyresourcepacks.SneakyResourcePacks"
 	}
 
 	from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })

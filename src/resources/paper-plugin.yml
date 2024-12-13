@@ -1,7 +1,7 @@
-name: paperplugin
+name: SneakyResourcePacks
 version: "1.0"
-main: com.danidipp.paperplugin.PaperPlugin
+main: com.danidipp.sneakyresourcepacks.SneakyResourcePacks
 api-version: "1.20"
 authors:
   - DaniDipp
-description: "Plugin template for Paper"
+description: "Paper plugin for managing multiple server resourcepacks"
