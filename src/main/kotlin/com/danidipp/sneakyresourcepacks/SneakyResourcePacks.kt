@@ -1,5 +1,6 @@
 package com.danidipp.sneakyresourcepacks
 
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import java.net.URI
 import java.util.*
@@ -26,6 +27,9 @@ class SneakyResourcePacks : JavaPlugin() {
         ))
 
         server.pluginManager.registerEvents(ResourcepackEvents(), this)
+        if (Bukkit.getPluginManager().isPluginEnabled("SneakyCharacterManager")) {
+            server.pluginManager.registerEvents(ResourcepackEvents.scmEventListener(), this)
+        }
 
     }
 

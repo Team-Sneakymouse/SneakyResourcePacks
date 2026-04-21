@@ -35,25 +35,39 @@ data class SneakyResourcePack(
         return hash
     }
 
-    fun sendTo(player: Player) {
-        val request = makeRequest(!player.hasPermission("sneakyresourcepacks.bypass"), this)
-        player.sendResourcePacks(request)
-    }
-
-    fun removeFrom(player: Player) {
-        val request = makeRequest(!player.hasPermission("sneakyresourcepacks.bypass"), this)
-        player.removeResourcePacks(request)
-    }
-
-    companion object {
-        fun makeRequest(required: Boolean, first: ResourcePackInfoLike, vararg more: ResourcePackInfoLike): ResourcePackRequest {
-            return ResourcePackRequest.resourcePackRequest()
-                .packs(first, *more)
-                .required(required)
+    fun sendTo(target: Audience) {
+        target.forEachAudience {
+            if (it !is Player) {
+                SneakyResourcePacks.getInstance().logger.warning("Tried to send resource pack to non-player ${it.javaClass.simpleName}")
+                return@forEachAudience
+            }
+            val request = ResourcePackRequest.resourcePackRequest()
+                .packs(this)
+                .required(!it.hasPermission("sneakyresourcepacks.bypass"))
                 .prompt(prompt)
                 .callback(callback)
                 .build()
+            it.sendResourcePacks(request)
         }
+    }
+
+    fun removeFrom(target: Audience) {
+        target.forEachAudience {
+            if (it !is Player) {
+                SneakyResourcePacks.getInstance().logger.warning("Tried to remove resource pack from non-player ${it.javaClass.simpleName}")
+                return@forEachAudience
+            }
+            val request = ResourcePackRequest.resourcePackRequest()
+                .packs(this)
+                .required(!it.hasPermission("sneakyresourcepacks.bypass"))
+                .prompt(prompt)
+                .callback(callback)
+                .build()
+            it.removeResourcePacks(request)
+        }
+    }
+
+    companion object {
         private val prompt = Component.text("The server resourcepacks are required for custom models, textures, and sounds.")
         private val callback = ResourcePackCallback { uuid, status, audience ->
             val resourcePack = SneakyResourcePacks.resourcePacks[uuid] ?: return@ResourcePackCallback
@@ -64,6 +78,11 @@ data class SneakyResourcePack(
                 ResourcePackStatus.SUCCESSFULLY_LOADED -> {
                     SneakyResourcePacks.getInstance().logger.info("Resource pack ${resourcePack.name} loaded for ${audience.name}")
                     resourcePack.players.add(audience)
+                    if(SneakyResourcePacks.resourcePacks.values.filter { it.enabled }.all { it.players.contains(audience) }) {
+                        val packs = SneakyResourcePacks.resourcePacks.values
+                            .filter { it.players.contains(audience) }
+                        Bukkit.getServer().pluginManager.callEvent(ResourcepacksLoadedEvent(audience, packs))
+                    }
                 }
                 ResourcePackStatus.FAILED_DOWNLOAD -> {
                     SneakyResourcePacks.getInstance().logger.severe("Resource pack ${resourcePack.name} failed to download for ${audience.name}")
@@ -83,39 +102,39 @@ data class SneakyResourcePack(
             }
         }
 
-        fun applyAll() {
-            applyAll(null)
-        }
-        fun applyAll(player: Player?) {
-            val packs = SneakyResourcePacks.resourcePacks.values
-                .filter { it.enabled }
-            val first = packs.first()
-            val more = packs.drop(1).toTypedArray()
-            if (player != null) {
-                val request = makeRequest(!player.hasPermission("sneakyresourcepacks.bypass"), first, *more)
-                player.sendResourcePacks(request)
-                return
-            }
-
-            for(p in Bukkit.getServer().onlinePlayers) {
-                val request = makeRequest(!p.hasPermission("sneakyresourcepacks.bypass"), first, *more)
-                p.sendResourcePacks(request)
+        fun applyAll(target: Audience) {
+            val packs = SneakyResourcePacks.resourcePacks.values.filter { it.enabled }
+            target.forEachAudience {
+                if (it !is Player) {
+                    SneakyResourcePacks.getInstance().logger.warning("Tried to apply resource packs to non-player ${it.javaClass.simpleName}")
+                    return@forEachAudience
+                }
+                val request = ResourcePackRequest.resourcePackRequest()
+                    .packs(packs)
+                    .replace(true)
+                    .required(!it.hasPermission("sneakyresourcepacks.bypass"))
+                    .prompt(prompt)
+                    .callback(callback)
+                    .build()
+                it.sendResourcePacks(request)
             }
         }
 
-        fun clearAll(player: Player?) {
+        fun clearAll(target: Audience) {
             val packs = SneakyResourcePacks.resourcePacks.values
-            val first = packs.first()
-            val more = packs.drop(1).toTypedArray()
-            if (player != null) {
-                val request = makeRequest(!player.hasPermission("sneakyresourcepacks.bypass"), first, *more)
-                player.removeResourcePacks(request)
-                return
-            }
-
-            for(p in Bukkit.getServer().onlinePlayers) {
-                val request = makeRequest(!p.hasPermission("sneakyresourcepacks.bypass"), first, *more)
-                p.removeResourcePacks(request)
+            target.forEachAudience {
+                if (it !is Player) {
+                    SneakyResourcePacks.getInstance().logger.warning("Tried to remove resource packs from non-player ${it.javaClass.simpleName}")
+                    return@forEachAudience
+                }
+                val request = ResourcePackRequest.resourcePackRequest()
+                    .packs(packs)
+                    .replace(true)
+                    .required(!it.hasPermission("sneakyresourcepacks.bypass"))
+                    .prompt(prompt)
+                    .callback(callback)
+                    .build()
+                it.removeResourcePacks(request)
             }
         }
     }

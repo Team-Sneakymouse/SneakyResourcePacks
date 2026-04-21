@@ -50,13 +50,11 @@ class ResourcepackCommand : Command("resourcepack") {
             sender.sendMessage("You do not have permission to use this command")
             return true
         }
-        val target = Bukkit.getServer().getPlayer(args.last()) ?: sender as? Player
+        val target =
+            if (args[args.size - 1] == "all") Bukkit.getServer()
+            else Bukkit.getPlayer(args[args.size - 1]) ?: sender
 
-        // /resourcepack all
-        if (args.size == 1 && args[0].lowercase() == "all") {
-            SneakyResourcePack.applyAll()
-            return true
-        }
+
         // /resourcepack <user>
         if (args.size == 1 && target != null && (target != sender || args[0].lowercase() == sender.name.lowercase())) {
             SneakyResourcePack.applyAll(target)
