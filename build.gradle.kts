@@ -41,11 +41,8 @@ repositories {
 dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.20")
 	compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
-	val scmCompileJar = file("libs/SneakyCharacterManager-1.0-SNAPSHOT.jar")
-	if (scmCompileJar.exists()) {
-		compileOnly(files(scmCompileJar))
-	} else {
-		compileOnly("io.github.team-sneakymouse:sneakycharactermanager-paper:2026.10.09-84db8a554af1")
+	compileOnly("io.github.team-sneakymouse:sneakycharactermanager-paper:2026.10.09-84db8a554af1") {
+		isTransitive = false
 	}
 	// compileOnly("me.clip:placeholderapi:2.11.5")
 	// compileOnly("us.dynmap:dynmap-api:3.4-beta-3")
