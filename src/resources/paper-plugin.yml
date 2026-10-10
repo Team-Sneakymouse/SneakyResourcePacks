@@ -1,5 +1,5 @@
 name: SneakyResourcePacks
-version: "1.0"
+version: "${version}"
 main: com.danidipp.sneakyresourcepacks.SneakyResourcePacks
 api-version: "1.20"
 authors:
