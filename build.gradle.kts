@@ -99,6 +99,7 @@ publishing {
 				name.set("SneakyResourcePacks")
 				description.set("Paper plugin for managing multiple server resourcepacks")
 				url.set("https://github.com/Team-Sneakymouse/SneakyResourcePacks")
+				properties.put("sneakyrp.deployment.type", "paper-plugin")
 				scm {
 					url.set("https://github.com/Team-Sneakymouse/SneakyResourcePacks")
 					connection.set("scm:git:https://github.com/Team-Sneakymouse/SneakyResourcePacks.git")
