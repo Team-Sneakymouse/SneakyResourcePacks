@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitTask
 
 class ResourcepackEvents : Listener {
     companion object {
+        // Keyed by Player: entries and tasks must be removed on quit and disable (a UUID key would be safer)
         val joinedPlayers = mutableMapOf<Player,BukkitTask>()
         fun scmEventListener(): Listener {
             return object : Listener {
@@ -45,6 +46,7 @@ class ResourcepackEvents : Listener {
         SneakyResourcePacks.getInstance().logger.info("${event.resourcepacks.size} resourcepacks loaded for ${event.player.name}")
         if (joinedPlayers.contains(event.player)) {
             joinedPlayers.remove(event.player)
+            // hardcoded login spell; further console commands belong in config
             val command = "ms cast as ${event.player.name} holiday-xmas-login"
             Bukkit.dispatchCommand(event.player.server.consoleSender, command)
         }
