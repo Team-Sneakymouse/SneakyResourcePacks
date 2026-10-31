@@ -86,6 +86,7 @@ tasks.jar {
 sourceSets {
 	main {
 		java.srcDir("src/main/kotlin")
+		// config.yml and paper-plugin.yml live in src/resources, not src/main/resources
 		resources.srcDir(file("src/resources"))
 	}
 }

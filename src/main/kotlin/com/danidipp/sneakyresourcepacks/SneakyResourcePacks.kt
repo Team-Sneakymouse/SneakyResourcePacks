@@ -27,6 +27,7 @@ class SneakyResourcePacks : JavaPlugin() {
         ))
 
         server.pluginManager.registerEvents(ResourcepackEvents(), this)
+        // SneakyCharacterManager is optional: touch its classes only behind this check
         if (Bukkit.getPluginManager().isPluginEnabled("SneakyCharacterManager")) {
             server.pluginManager.registerEvents(ResourcepackEvents.scmEventListener(), this)
         }
